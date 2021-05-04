@@ -14,17 +14,23 @@ async def on_message(message):
     if message.author == client.user:
         return
     await autoResponse(message)
-    await client.process_commands(message)
+    try: await client. process_commands(message)
+    except Exception:
+        await ctx.send('invalid command')
+    pass
 async def autoResponse(ctx):
     response = ""
     if ctx.author.bot: return
     if ctx.content in qa: await ctx.channel.send(qa[ctx.content])
 
+@client.event
+async def on_command_error(ctx,error):
+    await ctx.send('no')
 
 @client.event
 async def on_ready():
     print(f"{client.user.name} connected to Discord!\n")
-    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name='Hentai'))
+    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name='Slave labor'))
     await reload()
 
 @client.command(name = "test")
@@ -34,7 +40,7 @@ async def test(ctx):
 @client.group(invoke_without_command=True)
 async def help(ctx):
     embed = discord.Embed(title='help',description='dip!help <command> for knowledge',color=0xf40bd5)
-    embed.add_field(name='user commands',value='help \nfunny')
+    embed.add_field(name='user commands',value='help \nfunny \nentry')
     embed.add_field(name='admin commands',value='reload')
     await ctx.send(embed=embed)
 
@@ -47,11 +53,15 @@ async def help_help(ctx): await ctx.send(embed=discord.Embed(title='help',descri
 @help.command(name='funny')
 async def help_funny(ctx): await ctx.send(embed=discord.Embed(title='funny',description='Sends a random image from the haha funny image folder.',color=0xf40bd5).add_field(name='Syntax',value='dip!funny'))
 
+@help.command(name='entry')
+async def help_entry(ctx): await ctx.send(embed=discord.Embed(title='entry',description='Displays entry of number given from the Manifest',color=0xf40bd5).add_field(name='Syntax',value=f'dip!entry (1-{len(entries)-1})'))
+
 @client.command(name = "reload")
-async def reload():
-    global qa, hahaFunnyImages,hahaFunnyVideos, hahaFunnySounds
-    with open('QA.json','r') as file:
-        qa = json.loads(file.read())
+async def reload(ctx=None):
+    global qa, hahaFunnyImages,hahaFunnyVideos, hahaFunnySounds, entries
+    with open('QA.json','r') as qafile: qa = json.loads(qafile.read())
+    with open('Entries.json','r') as entryfile: entries = json.loads(entryfile.read())["Entries"]
+
     hahaFunnyImages = []
     for root, dirs, files in os.walk(fr"D:\haha funny image"):
         for filename in files:
@@ -82,5 +92,12 @@ async def funnyVideo(ctx):
 @funny.command(name="sound")
 async def funnySound(ctx):
     await ctx.send(file=discord.File(hahaFunnySounds[randint(0,len(hahaFunnySounds))]))
+
+@client.command(name="entry")
+async def entry(ctx,index=None):
+    try: index = int(index)
+    except: await ctx.send("Invalid Entry"); return
+    if index>len(entries): await ctx.send("Entry Out of Range"); return
+    await ctx.send(entries[index])
 
 client.run(TOKEN)
