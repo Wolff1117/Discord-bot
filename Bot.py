@@ -70,7 +70,6 @@ class funny(commands.Cog):
     @commands.command(name="sound")
     async def funnySound(self,ctx): await ctx.send(file=discord.File(hahaFunnySounds[randint(0,len(hahaFunnySounds))]))
 
-
 client.add_cog(command(client))
 client.add_cog(event(client))
 client.add_cog(funny(client))
