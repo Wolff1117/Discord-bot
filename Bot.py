@@ -97,7 +97,7 @@ async def funnySound(ctx):
 async def entry(ctx,index=None):
     if ctx.author.id == 364237299275399168: await ctx.send(entries[2]); return
     try: index = int(index)
-    except: await ctx.send("Invalid Entry"); return
+    except: await ctx.send(f'Entry must be between 1 and {len(entries)-1}'); return
     if index>len(entries): await ctx.send("Entry Out of Range"); return
     await ctx.send(entries[index])
 
