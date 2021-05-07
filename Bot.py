@@ -6,7 +6,7 @@ from discord.ext.commands import is_owner
 
 load_dotenv()
 TOKEN = os.getenv("TOKEN")
-client = commands.Bot(command_prefix = "dip!",help_command=None)
+client = commands.Bot(command_prefix = ['dip!','dipshit!','d!'],help_command=None)
 
 qa={}; entries=[]; hahaFunnyImages=[]; hahaFunnyVideos=[]; hahaFunnySounds=[] # defining all variables because debugger is dumb
 
